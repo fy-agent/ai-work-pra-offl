@@ -1,0 +1,41 @@
+name: public-scan
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: reject secrets, local paths, office files, raster images
+        run: |
+          set -euo pipefail
+          if find . -type f \( \
+            -name '*.docx' -o -name '*.xlsx' -o -name '*.pptx' -o -name '*.pdf' \
+            -o -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \
+            -o -name '.env' -o -name '*.pem' \
+          \) -not -path './.git/*' | grep -q .; then
+            echo 'blocked: office, image, or secret file present'
+            find . -type f \( \
+              -name '*.docx' -o -name '*.xlsx' -o -name '*.pptx' -o -name '*.pdf' \
+              -o -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \
+              -o -name '.env' -o -name '*.pem' \
+            \) -not -path './.git/*'
+            exit 1
+          fi
+          if grep -R -n -E --binary-files=without-match \
+            'sk-[A-Za-z0-9]{10,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|Bearer [A-Za-z0-9._-]{20,}|-----BEGIN (RSA |OPENSSH )?PRIVATE KEY-----' \
+            --exclude-dir=.git . ; then
+            echo 'blocked: credential pattern'
+            exit 1
+          fi
+          if grep -R -n -E --binary-files=without-match \
+            --exclude-dir=.git --exclude-dir=.github \
+            'E:\\github|C:\\Users\\|/Users/[A-Za-z0-9._-]+/|larksuite.com|feishu.cn|dingtalk.com' \
+            . ; then
+            echo 'blocked: local path or private-doc host'
+            exit 1
+          fi
+          echo 'public-scan ok'

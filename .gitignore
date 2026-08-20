@@ -1,0 +1,34 @@
+# secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+
+# office originals — this public repo is markdown only
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.pdf
+
+# product screenshots and photos
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.mp4
+*.mov
+
+# machine junk
+.DS_Store
+Thumbs.db
+desktop.ini
+node_modules/
+.vscode/
+.idea/
+*.log
+__pycache__/
