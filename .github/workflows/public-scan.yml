@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: validate content catalog, chapters, and links
+        run: node scripts/catalog.mjs --check
       - name: reject secrets, local paths, office files, raster images
         run: |
           set -euo pipefail

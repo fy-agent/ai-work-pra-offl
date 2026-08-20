@@ -1,0 +1,5 @@
+metric,value,unit,source_note
+event_count,6,场,本月活动汇总
+fee_cny,12400,CNY,本月财务口径
+participant_count,36,人,报名表已对账
+free_text,可能十几场,文本,这是备注不是数字来源
